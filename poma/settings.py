@@ -187,10 +187,12 @@ class PROD(DEV):
     DEMO_USERNAME = os.getenv("DEMO_USERNAME")
     INSTALLED_APPS = apps_to_install
     DEBUG = False
-    if not DEMO_USERNAME:
-        DATABASES = values.DatabaseURLValue(environ_required=True)
 
     ALLOWED_HOSTS = ["app.pomasearch.com"]
+    if not DEMO_USERNAME:
+        DATABASES = values.DatabaseURLValue(environ_required=True)
+    else:
+        ALLOWED_HOSTS.append("demo.pomasearch.com")
     CSRF_TRUSTED_ORIGINS = ["https://app.pomasearch.com"]
     CORS_ORIGIN_WHITELIST = CSRF_TRUSTED_ORIGINS
     CORS_ORIGIN_ALLOW_ALL = True

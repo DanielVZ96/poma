@@ -213,6 +213,7 @@ class PROD(DEV):
     EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
     SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
     SECRET_KEY = os.getenv("SECRET_KEY")
+    DEBUG = os.getenv("DEBUG") == "true"
 
 
 EMAIL_VERIFIED_CALLBACK = verified_callback

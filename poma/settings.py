@@ -189,11 +189,12 @@ class PROD(DEV):
     DEBUG = False
 
     ALLOWED_HOSTS = ["app.pomasearch.com"]
+    CSRF_TRUSTED_ORIGINS = ["https://app.pomasearch.com"]
     if not DEMO_USERNAME:
         DATABASES = values.DatabaseURLValue(environ_required=True)
     else:
         ALLOWED_HOSTS.append("demo.pomasearch.com")
-    CSRF_TRUSTED_ORIGINS = ["https://app.pomasearch.com"]
+        CSRF_TRUSTED_ORIGINS.append("https://demo.pomasearch.com")
     CORS_ORIGIN_WHITELIST = CSRF_TRUSTED_ORIGINS
     CORS_ORIGIN_ALLOW_ALL = True
 

@@ -184,9 +184,11 @@ EMAIL_VERIFIED_CALLBACK = verified_callback
 
 
 class PROD(DEV):
+    DEMO_USERNAME = os.getenv("DEMO_USERNAME")
     INSTALLED_APPS = apps_to_install
     DEBUG = False
-    DATABASES = values.DatabaseURLValue(environ_required=True)
+    if not DEMO_USERNAME:
+        DATABASES = values.DatabaseURLValue(environ_required=True)
 
     ALLOWED_HOSTS = ["app.pomasearch.com"]
     CSRF_TRUSTED_ORIGINS = ["https://app.pomasearch.com"]

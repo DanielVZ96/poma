@@ -47,10 +47,12 @@
                            {% if gpt_response %}checked{% endif %}/>
                     <label for="id_gpt" class="checked:to-blue-500 mx-2">GPT</label>
                 </div>
-                <img width="40px"
-                     height="40px"
-                     class="max-md:hidden mx-2 w-10 h-10 rounded-2xl aspect-1 object-cover my-auto"
-                     src="{{ request.user.profile.logo }}"/>
+                {% if not request.session.demo %}
+                    <img width="40px"
+                         height="40px"
+                         class="max-md:hidden mx-2 w-10 h-10 rounded-2xl aspect-1 object-cover my-auto"
+                         src="{{ request.user.profile.logo }}"/>
+                {% endif %}
             </form>
             <nav class="flex flex-row max-w-[40em] self-end">
                 {% if not request.session.demo %}

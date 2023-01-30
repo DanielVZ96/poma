@@ -55,6 +55,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.867 19.125h.008v.008h-.008v-.008z" />
                         </svg>
                     </a>
+                {% endif %}
+                {% if not request.session.demo %}
                     <a class="px-2 py-5 underline underline-offset-1 align-center hover:text-sky-500 dark:hover:text-sky-400">
                         <img class="w-10 h-10 rounded-2xl object-cover m-auto"
                              src="{{ request.user.profile.logo }}"/>

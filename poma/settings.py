@@ -177,6 +177,8 @@ class DEV(Configuration):
     SECRET_KEY = os.getenv("SECRET_KEY")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
+    DEMO_USERNAME = os.getenv("DEMO_USERNAME")
+
 
 EMAIL_VERIFIED_CALLBACK = verified_callback
 

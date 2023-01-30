@@ -22,8 +22,12 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
     path("__reload__/", include("django_browser_reload.urls")),
-    path("", include("app.urls")),
 ]
+
+if settings.DEMO_USERNAME:
+    urlpatterns = [
+        path("", include("app.urls")),
+    ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

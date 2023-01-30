@@ -20,11 +20,11 @@ import services_pb2
 import services_pb2_grpc
 import serving_pb2
 
-KEY = os.getenv("SEMANTIC_KEY")
-REDIRECT_URI = os.getenv("SEMANTIC_REDIRECT_URI")
-APP_ID = os.getenv("SEMANTIC_APP_ID")
-CLIENT_SECRET = os.getenv("SEMANTIC_CLIENT_SECRET")
-CUSTOMER_ID = os.getenv("SEMANTIC_CUSTOMER_ID")
+KEY = os.environ["SEMANTIC_KEY"]
+REDIRECT_URI = os.environ["SEMANTIC_REDIRECT_URI"]
+APP_ID = os.environ["SEMANTIC_APP_ID"]
+CLIENT_SECRET = os.environ["SEMANTIC_CLIENT_SECRET"]
+CUSTOMER_ID = os.environ["SEMANTIC_CUSTOMER_ID"]
 SERVING_ENDPOINT = "serving.vectara.io"
 INDEXING_ENDPOINT = "indexing.vectara.io"
 UPLOAD_ENDPOINT = "https://api.vectara.io/v1/upload"

@@ -12,6 +12,7 @@ from app.views import (
     Search,
     SearchFailure,
 )
+from django.conf import settings
 
 urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
@@ -33,3 +34,10 @@ urlpatterns = [
     path("search-failure/", SearchFailure.as_view(), name="search-failure"),
     path("", Home.as_view(), name="home"),
 ]
+
+if settings.DEMO_USERNAME:
+    urlpatterns = [
+        path("search/", Search.as_view(), name="search"),
+        path("search-failure/", SearchFailure.as_view(), name="search-failure"),
+        path("", Home.as_view(), name="home"),
+    ]

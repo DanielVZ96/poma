@@ -23,20 +23,20 @@ from poma.search.openai import anwser
 PAGING = 15
 
 
+class DemoMixin(AccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if username := settings.DEMO_USERNAME:
+            self.request.session["demo"] = True
+            login(self.request, user=User.objects.get(username=username))
+        return super().dispatch(request, *args, **kwargs)
+
+
 class EmailSentView(TemplateView):
     template_name = "app/email_sent.html"
 
     def get(self, *args, **kwargs):
         self.request.session["onboarding"] = "email_sent"
         return super().get(*args, **kwargs)
-
-
-class ActiveUserRequiredMixin(AccessMixin):
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_active:
-            request.session["onboarding"] = "email"
-            send_verification(self.request.user)
-        return super().dispatch(request, *args, **kwargs)
 
 
 class RegisterView(FormView):
@@ -100,7 +100,7 @@ class UpdateWorkspaceView(LoginRequiredMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class SearchMixin:
+class SearchMixin(DemoMixin):
     default_template = "app/home.html"
 
     def post(self, request, *args, **kwargs):

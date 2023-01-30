@@ -1,0 +1,7 @@
+app.pomasearch.com {
+    route {
+        uri replace /media /poma
+        redir /poma* https://poma.s3.fr-par.scw.cloud/{uri}
+        reverse_proxy django:8000
+    }
+}

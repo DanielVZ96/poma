@@ -1,0 +1,23 @@
+{
+    "from": {
+        "name": "Alice",
+        "email": "alice@my.domain.example.com"
+    },
+    "to": [
+        {
+        "name": "Bob",
+        "email": "bob@caramail.fr"
+        }
+    ],
+    "subject": "Some subject",
+    "text": "Some text.",
+    "html": "<p>Some <span style=\"font-weight:bold\">HTML</span>.</p>",
+    "project_id": "<project-id>",
+    "attachments": [
+        {
+            "name": "file.html",
+            "type": "text/html; charset=\"utf8\"",
+            "content": "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KICAgIDxoZWFkPgogICAgICAgIDxtZXRhIGNoYXJzZXQ9InV0Zi04Ij4KICAgICAgICA8dGl0bGU+dGl0bGU8L3RpdGxlPgogICAgPC9oZWFkPgogICAgPGJvZHk+CiAgICAgICAgPHA+SGVsbG8gPHNwYW4gc3R5bGU9ImNvbG9yOmJsdWUiPndvcmxkPC9zcGFuPiE8L3A+CiAgICA8L2JvZHk+CjwvaHRtbD4="
+        }
+    ]
+}

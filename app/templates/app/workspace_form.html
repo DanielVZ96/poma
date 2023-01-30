@@ -1,0 +1,103 @@
+{% load static %}
+{% load tailwind_tags %}
+<!DOCTYPE html>
+{% block extrahead %}
+    <link rel="shortcut icon" href="{% static 'images/logo.png' %}"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <title>Poma Search</title>
+{% endblock extrahead %}
+<html lang="en" class="h-full">
+    <body class="h-full bg-gradient-to-tr from-bgfrom to-bgto p-10 justify-center">
+        <div class="my-2 max-w-[40em]  flex flex-col justify-start m-auto bg-white shadow-2xl rounded-2xl h-auto overflow-hidden">
+            <nav class="flex flex-row max-w-[40em] self-center">
+                <a href="{% url 'logout' %}"
+                   class="px-2 py-5 underline underline-offset-1 align-middle hover:text-sky-500 dark:hover:text-sky-400">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="w-10 h-10 opacity-50">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                    </svg>
+                </a>
+                <a href="{% url 'home' %}"
+                   class="px-2 py-5 underline underline-offset-1 align-middle hover:text-sky-500 dark:hover:text-sky-400">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="w-10 h-10 opacity-50">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </a>
+                <a class="px-2 py-5 underline underline-offset-1 align-center hover:text-sky-500 dark:hover:text-sky-400">
+                    <img class="w-10 h-10 rounded-2xl object-cover m-auto"
+                         src="{{ request.user.profile.logo }}"/>
+                </a>
+            </nav>
+            <h1 class="text-2xl justify-center text-center p-5">Workspace</h1>
+            <form method="POST"
+                  enctype="multipart/form-data"
+                  class="flex flex-col w-full h-auto">
+                {% csrf_token %}
+                <div class="p-5 pb-0">
+                    {% for field in form %}
+                        <div class="p-2 grid place-content-center">
+                            <table class="w-96">
+                                <tr class="p-2 flex">
+                                    <td class="text-xs absolute ml-10 -mt-1 bg-white px-1">{{ field.label }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="flex justify-center">
+                                        {{ field }}
+                                        {% if field.errors %}<small>{{ field.errors|striptags }}</small>{% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="p-2">
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="text-red-400 text-sm">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="text-red-400 text-sm text-center">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="px-5 py-2 flex place-content-center">
+                        <input type="submit"
+                               value="Save"
+                               class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-10 px-6 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="my-2 max-w-[40em]  flex flex-col justify-start m-auto bg-white shadow-2xl rounded-2xl h-auto overflow-hidden">
+            <h1 class="text-2xl justify-center text-center p-5">Integrations</h1>
+            <div class="grid grid-cols-3 m-auto items-center">
+                <h2 class="text-xl justify-center text-center p-5">Google Drive™</h2>
+                <img class="w-10 h-10" src={% static 'images/icons/drive.png' %}/>
+                {% if has_google %}
+                    <a href="{% url 'google-oauth-revoke' %}"
+                       class="text-center align-middle border shadow-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-white font-semibold h-auto px-6 rounded-lg flex items-center justify-center  /20  w-auto m-auto text-lg bg-red-500">Revoke</a>
+                {% else %}
+                    <a href="{% url 'google-oauth' %}"
+                       class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto px-6 rounded-lg flex items-center justify-center  /20  w-auto m-auto text-lg">Activate</a>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

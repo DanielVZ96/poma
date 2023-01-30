@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "pomasearch"
+version = "0.1.0"
+description = "Search anything"
+authors = ["Daniel Valenzuela <dsvalenzuela@uc.cl>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Authlib = "^1.2.0"
+grpcio = "^1.51.1"
+grpcio-tools = "^1.51.1"
+requests = "^2.28.2"
+Pillow = "^9.3.0"
+django-tailwind = "^3.4.0"
+Django = "^4.1.4"
+django-configurations = {extras = ["cache", "database", "email", "search"], version = "^2.4"}
+daphne = "^4.0.0"
+psycopg2-binary = "^2.9.5"
+Twisted = {extras = ["tls", "http2"], version = "^22.10.0"}
+django-storages = "^1.13.1"
+boto3 = "^1.26.32"
+django-resized = "^1.0.2"
+django-sendgrid-v5 = "^1.2.1"
+PyJWT = "^2.6.0"
+bleach = "^5.0.1"
+django-bleach = "^3.0.1"
+django-betterforms = "^2.0.0"
+google-api-python-client = "^2.73.0"
+google-auth-httplib2 = "^0.1.0"
+google-auth-oauthlib = "^0.8.0"
+django-fernet-fields = "^0.6"
+openai = "^0.26.3"
+celery = "^5.2.7"
+
+[tool.poetry.dev-dependencies]
+djlint = "^1.19.12"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

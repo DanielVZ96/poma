@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+
+  django:
+    restart: always
+    build: .
+    image: django
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/app
+    env_file: .env
+    environment:
+      DJANGO_CONFIGURATION: PROD
+    command: daphne -b 0.0.0.0 -p 8000 poma.asgi:application
+    networks:
+      - web
+
+  migration:
+    restart: "no"
+    image: django
+    env_file: .env
+    environment:
+      DJANGO_CONFIGURATION: PROD
+    command: python manage.py migrate
+    networks:
+      - web
+
+  staticfiles:
+    restart: "no"
+    image: django
+    env_file: .env
+    environment:
+      DJANGO_CONFIGURATION: PROD
+    command: bash -c 'python manage.py tailwind build --no-input && python manage.py collectstatic --noinput'
+    networks:
+      - web
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+
+networks:
+  web:

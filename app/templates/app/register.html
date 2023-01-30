@@ -1,0 +1,69 @@
+{% load static %}
+{% load tailwind_tags %}
+<!DOCTYPE html>
+{% block extrahead %}
+    <link rel="shortcut icon" href="{% static 'images/logo.png' %}"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <title>Poma Search</title>
+{% endblock extrahead %}
+<link rel="shortcut icon" href="{% static 'images/logo.png' %}"/>
+<div class="min-[768px]:flex justify-center min-[768px]:py-28 max-md:h-full max-md:flex-1 bg-gradient-to-tr from-bgfrom to-bgto">
+    <img alt="logo"
+         class="opacity-5 -mr-20 w-[500px] max-md:w-40"
+         src="{% static 'images/logo.svg' %}"/>
+    <div class="m-10 shadow-2xl rounded-lg  w-full max-w-md bg-white">
+        <form method="POST"
+              enctype="multipart/form-data"
+              class="flex-1 items-center p-2"
+              novalidate>
+            {% csrf_token %}
+            <div class="p-5 pb-0">
+                <h1 class="text-2xl justify-center text-center p-5">Welcome!</h1>
+                {% for field in form %}
+                    <div class="p-2 grid place-content-center">
+                        <table class="w-96">
+                            <tr class="p-2 flex">
+                                <td class="text-xs absolute ml-10 -mt-1 bg-white px-1">{{ field.label }}</td>
+                            </tr>
+                            <tr>
+                                <td class="flex justify-center">
+                                    {{ field }}
+                                    {% if field.errors %}<small>{{ field.errors|striptags }}</small>{% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="p-2">
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="text-red-400 text-sm">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="text-red-400 text-sm text-center">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="px-5 py-2 flex place-content-center">
+                    <input type="submit"
+                           value="Send confirmation email"
+                           class="cursor-pointer align-middle bg-slate-900 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-white font-semibold h-10 px-6 rounded-lg flex items-center justify-center  /20  w-4/5 text-lg"/>
+                </div>
+                <div class="p-5 flex-1 place-content-center">
+                    <p class="flex place-content-center">
+                        <a class="cursor-pointer" href="{% url 'login' %}">Want to login instead?</a>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

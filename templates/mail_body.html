@@ -1,0 +1,7 @@
+{% load bleach_tags %}
+<p>You are almost there, {{ user.username }}!</p>
+<br/>
+<p>
+    Please click <a href="{{ link }}">here</a> to confirm your account
+</p>
+<p>The link will expire on {{ expiry|time:"TIME_FORMAT" }}</p>

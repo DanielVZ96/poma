@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Neucha&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input[type=text]:not(#id_search),
+input[type=password],
+input[type=email],
+input#id_username,
+input#id_password,
+input#id_password1,
+input#id_password2,
+input#id_name,
+input#id_email,
+input#id_pic,
+input#id_workspace_name,
+textarea#id_comment,
+textarea#id_description {
+    width: 80%;
+    border-radius: 0.5em;
+}
+
+textarea#id_content {
+    max-height: 75vh;
+    border-radius: 0.5em;
+    padding-top: 1.5em;
+}
+
+textarea#id_description {
+    height: 4.5em;
+}
+
+textarea#id_comment {
+    width: 100%;
+    height: 5em;
+}
+
+@media (max-width: 768px) {
+
+    textarea#id_comment,
+    textarea#id_content {
+        width: 100%;
+    }
+}

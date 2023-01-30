@@ -1,0 +1,107 @@
+{% load static %}
+{% load tailwind_tags %}
+<!DOCTYPE html>
+{% block extrahead %}
+    <link rel="shortcut icon" href="{% static 'images/logo.png' %}"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <title>Poma Search</title>
+{% endblock extrahead %}
+<html lang="en">
+    <body class="h-full bg-gradient-to-tr from-bgfrom to-bgto p-10 justify-center">
+        <div class="p-5 w-full flex flex-row justify-start m-auto bg-white shadow-2xl rounded-2xl rounded-b-none h-auto overflow-hidden">
+            <form method="post"
+                  novalidate
+                  class="flex flex-row w-full justify-start items-center h-auto px-2">
+                {% csrf_token %}
+                <div class="flex flex-row max-w-[40em] border rounded-full w-full justify-center shadow-md hover:shadow-xl p-1">
+                    <a class="flex flex-row" href="{% url 'home' %}">
+                        <img width="25px"
+                             height="25px"
+                             alt="logo"
+                             class="ml-4 mr-2 rounded-full"
+                             src="{% static 'images/logo.svg' %}"/>
+                        <p class="pr-4 my-auto height-auto text-3xl border-r">Poma</p>
+                    </a>
+                    <input id="id_search"
+                           name="search"
+                           required
+                           autocomplete="search"
+                           class="ml-8 text-lg border-none w-full bg-transparent outline-none focus:outline-0 outline-0 focus:ring-0"
+                           value="{{ q }}"
+                           type="text"/>
+                    <button class="mr-4">
+                        <img width="30px"
+                             height="30px"
+                             class="my-auto h-auto"
+                             alt="magnifying glass"
+                             src="{% static 'images/icons/magnifying-glass.svg' %}"/>
+                    </button>
+                </div>
+                <div class="flex flex-row items-center m-2">
+                    <input id="id_gpt"
+                           name="gpt"
+                           type="checkbox"
+                           {% if gpt_response %}checked{% endif %}/>
+                    <label for="id_gpt" class="checked:to-blue-500 mx-2">GPT</label>
+                </div>
+                <img width="40px"
+                     height="40px"
+                     class="mx-2 w-10 h-10 rounded-2xl aspect-1 object-cover my-auto"
+                     src="{{ request.user.profile.logo }}"/>
+            </form>
+            <nav class="flex flex-row max-w-[40em] self-end">
+                <a href="{% url 'logout' %}"
+                   class="px-2 py-5 underline underline-offset-1 align-middle hover:text-sky-500 dark:hover:text-sky-400">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="w-10 h-10 opacity-50">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                    </svg>
+                </a>
+                <a href="{% url 'workspace-update' %}"
+                   class="px-2 py-5 underline underline-offset-1 align-middle hover:text-sky-500 dark:hover:text-sky-400">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="w-10 h-10 opacity-50">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75a4.5 4.5 0 01-4.884 4.484c-1.076-.091-2.264.071-2.95.904l-7.152 8.684a2.548 2.548 0 11-3.586-3.586l8.684-7.152c.833-.686.995-1.874.904-2.95a4.5 4.5 0 016.336-4.486l-3.276 3.276a3.004 3.004 0 002.25 2.25l3.276-3.276c.256.565.398 1.192.398 1.852z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.867 19.125h.008v.008h-.008v-.008z" />
+                    </svg>
+                </a>
+            </nav>
+        </div>
+        <div class="p-5 w-full flex flex-col justify-start m-auto bg-white rounded-2xl rounded-t-none h-auto overflow-auto drop-shadow-2xl">
+            <div class="text-gray-500 p-2">Showing {{ results | length }} results from Google Drive™</div>
+            <ol class="p-4 max-w-2xl">
+                {% if gpt_response %}
+                    <div class="my-2 text-justify p-2 border text-xl shadow-xl shadow-blue-500">
+                        {{ gpt_response }}
+                        <div class="text-sm text-gray-500">- By GPT</div>
+                    </div>
+                {% endif %}
+                {% for result in results %}
+                    <li class="py-4 text-lg flex flex-col">
+                        <a href="{{ result.link }}">
+                            <p class="text-gray-500 truncate">› {{ result.link }}</p>
+                            <h2 class="text-2xl hover:underline">{{ result.title }}</h2>
+                        </a>
+                        <p class="text-gray-500">Score {{ result.score }}</p>
+                        <p class="text-lg">{{ result.text }}</p>
+                    </li>
+                {% empty %}
+                    <li class="py-2 text-lg">
+                        Your search returned no results. Please make sure your spelling is correct and you contain documents related to your search.
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </body>
+</html>

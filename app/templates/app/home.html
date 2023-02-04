@@ -93,35 +93,37 @@
                            value="Search with Poma"/>
                 </div>
             </form>
-            <div class="w-auto flex flex-col items-center p-10 mb-10">
-                <h1 class="text-xl font-bold">Try these searches!</h1>
-                <div class="flex flex-col md:flex-row space-x-4 items-center">
-                    <a href="{% url 'search' %}?q=What's the Plumbus API&gpt=true"
-                       class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto min-h-[2.5rem] px-6  pl-4 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg">
-                        <img width="20px"
-                             height="20px"
-                             class="opacity-50 pr-1"
-                             src="{% static 'images/icons/magnifying-glass.svg' %}"/>
-                        What's the Plumbus API?
-                    </a>
-                    <a href="{% url 'search' %}?q=Who was Thucydides&gpt=true"
-                       class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto px-6 min-h-[2.5rem]  pl-4 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg">
-                        <img width="20px"
-                             height="20px"
-                             class="opacity-50 pr-1"
-                             src="{% static 'images/icons/magnifying-glass.svg' %}"/>
-                        Who was Thucydides?
-                    </a>
-                    <a href="{% url 'search' %}?q=Athenian alliance with argos"
-                       class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto min-h-[2.5rem] px-6  pl-4 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg">
-                        <img width="20px"
-                             height="20px"
-                             class="opacity-50 pr-1"
-                             src="{% static 'images/icons/magnifying-glass.svg' %}"/>
-                        Athenian alliance with Argos
-                    </a>
+            {% if request.session.demo %}
+                <div class="w-auto flex flex-col items-center p-10 mb-10">
+                    <h1 class="text-xl font-bold">Try these searches!</h1>
+                    <div class="flex flex-col md:flex-row space-x-4 items-center">
+                        <a href="{% url 'search' %}?q=What's the Plumbus API&gpt=true"
+                           class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto min-h-[2.5rem] px-6  pl-4 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg">
+                            <img width="20px"
+                                 height="20px"
+                                 class="opacity-50 pr-1"
+                                 src="{% static 'images/icons/magnifying-glass.svg' %}"/>
+                            What's the Plumbus API?
+                        </a>
+                        <a href="{% url 'search' %}?q=Who was Thucydides&gpt=true"
+                           class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto px-6 min-h-[2.5rem]  pl-4 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg">
+                            <img width="20px"
+                                 height="20px"
+                                 class="opacity-50 pr-1"
+                                 src="{% static 'images/icons/magnifying-glass.svg' %}"/>
+                            Who was Thucydides?
+                        </a>
+                        <a href="{% url 'search' %}?q=Athenian alliance with argos"
+                           class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto min-h-[2.5rem] px-6  pl-4 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg">
+                            <img width="20px"
+                                 height="20px"
+                                 class="opacity-50 pr-1"
+                                 src="{% static 'images/icons/magnifying-glass.svg' %}"/>
+                            Athenian alliance with Argos
+                        </a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </body>
 </html>

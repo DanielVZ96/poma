@@ -19,6 +19,7 @@ import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import requests
 from poma.search.openai import anwser
+from app import tasks
 
 PAGING = 15
 
@@ -28,6 +29,8 @@ class DemoMixin(AccessMixin):
         if username := settings.DEMO_USERNAME:
             self.request.session["demo"] = True
             login(self.request, user=User.objects.get(username=username))
+        else:
+            self.request.session.pop("demo", None)
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -128,7 +131,10 @@ class Search(SearchMixin, LoginRequiredMixin, views.View):
         response, error, success = request.user.profile.current_workspace.search(query)
         if not success:
             logging.error("Search failed, %s", error)
-            return redirect("search-failure")
+            params = {"reason": error}
+            params = urllib.parse.urlencode(params)
+            url = reverse("search-failure") + f"?{params}"
+            return redirect(url)
 
         data = response.json()
         results = {}
@@ -163,7 +169,7 @@ class Search(SearchMixin, LoginRequiredMixin, views.View):
             context = (
                 "".join(
                     Section.objects.filter(
-                        document_id__in=document_ids, section_id__in=section_ids
+                        document_id=document_ids[0], section_id__in=section_ids
                     ).values_list("text", flat=True)
                 )[:1000]
                 + "..."
@@ -185,6 +191,11 @@ class Search(SearchMixin, LoginRequiredMixin, views.View):
 class SearchFailure(SearchMixin, LoginRequiredMixin, TemplateView):
     template_name = "app/search-failed.html"
     default_template = template_name
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["reason"] = self.request.GET.get("reason", "Unknown")
+        return context
 
 
 class GoogleOauth(views.View):
@@ -227,6 +238,7 @@ class GoogleOauthCallback(views.View):
         workspace.add_google_credentials(credentials)
         workspace.activate_google()
         workspace.save()
+        tasks.index_workspace.delay(workspace.id)
         return redirect("workspace-update")
 
 

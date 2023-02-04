@@ -56,7 +56,7 @@ class DEV(Configuration):
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ["*"]
 
     TAILWIND_APP_NAME = "theme"
     INTERNAL_IPS = [

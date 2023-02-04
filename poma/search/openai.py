@@ -33,7 +33,7 @@ A: Unknown
 
 Context: {context}
 
-Given the above context. Answer the following question in at least two and at most 6 sentences of a single paragraph:
+Based only in the above context, and without adding any other information that's not in the context above, answer the following question in at least two and at most 6 sentences of a single paragraph:
 
 Q: {query}
 A:

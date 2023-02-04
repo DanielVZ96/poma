@@ -31,6 +31,8 @@ google-auth-oauthlib = "^0.8.0"
 django-fernet-fields = "^0.6"
 openai = "^0.26.3"
 celery = "^5.2.7"
+flower = "^1.2.0"
+redis = "^4.4.2"
 
 [tool.poetry.dev-dependencies]
 djlint = "^1.19.12"

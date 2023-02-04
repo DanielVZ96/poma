@@ -264,4 +264,7 @@ poetry.toml
 .ruff_cache/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,django
-
+.env_local
+.env
+.env_demo
+.env_prod

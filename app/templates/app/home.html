@@ -12,6 +12,7 @@
 <html lang="en" class="h-full">
     <body class="h-full bg-gradient-to-tr from-bgfrom to-bgto p-2 sm:p-10 justify-center">
         <div class="w-full flex flex-col justify-start m-auto bg-white shadow-2xl rounded-2xl h-full overflow-hidden">
+            {% if not request.session.demo %}<h2 class="self-center p-4">Welcome {{ request.user.username }}!</h2>{% endif %}
             <nav class="flex flex-row max-w-[40em] self-center">
                 {% if not request.session.demo %}
                     <a href="{% url 'logout' %}"
@@ -31,7 +32,7 @@
                          role="alert">
                         <div class="pl-4 text-sm font-normal">
                             This is a demo instance pointing to a <a class="text-blue-500 hover:underline"
-    href="https://drive.google.com/drive/folders/1XyjS_Xm_ANhqb0OtLt027dyNcgcsimU2?usp=share_link">drive folder</a> that contains the documents for the fictional Interdimensional Web Services, and Stories by Thucydides. Want your own or to add some files? Join our <a href="https://join.slack.com/t/pomasearch/shared_invite/zt-1nu8boxk6-zyKGvIFt4Jx0HPz_d7sj4g"
+    href="https://drive.google.com/drive/folders/1XyjS_Xm_ANhqb0OtLt027dyNcgcsimU2?usp=share_link">drive folder</a> that contains the documents for the fictional Interdimensional Web Services, and Stories by Thucydides. Want your own demo? Join our <a href="https://join.slack.com/t/pomasearch/shared_invite/zt-1nu8boxk6-zyKGvIFt4Jx0HPz_d7sj4g"
     class="text-blue-500 hover:underline">slack channel</a> and our <a href="https://us21.list-manage.com/survey?u=b7e9a9274fe8cccc601a974b4&id=11835248fc&e=*|UNIQID|*"
     class="text-blue-500 hover:underline">waiting list</a> for more info on the private beta!
                         </div>
@@ -92,6 +93,35 @@
                            value="Search with Poma"/>
                 </div>
             </form>
+            <div class="w-auto flex flex-col items-center p-10 mb-10">
+                <h1 class="text-xl font-bold">Try these searches!</h1>
+                <div class="flex flex-col md:flex-row space-x-4 items-center">
+                    <a href="{% url 'search' %}?q=What's the Plumbus API&gpt=true"
+                       class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto min-h-[2.5rem] px-6  pl-4 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg">
+                        <img width="20px"
+                             height="20px"
+                             class="opacity-50 pr-1"
+                             src="{% static 'images/icons/magnifying-glass.svg' %}"/>
+                        What's the Plumbus API?
+                    </a>
+                    <a href="{% url 'search' %}?q=Who was Thucydides&gpt=true"
+                       class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto px-6 min-h-[2.5rem]  pl-4 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg">
+                        <img width="20px"
+                             height="20px"
+                             class="opacity-50 pr-1"
+                             src="{% static 'images/icons/magnifying-glass.svg' %}"/>
+                        Who was Thucydides?
+                    </a>
+                    <a href="{% url 'search' %}?q=Athenian alliance with argos"
+                       class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto min-h-[2.5rem] px-6  pl-4 rounded-lg flex items-center justify-center  /20  w-auto mt-8 text-lg">
+                        <img width="20px"
+                             height="20px"
+                             class="opacity-50 pr-1"
+                             src="{% static 'images/icons/magnifying-glass.svg' %}"/>
+                        Athenian alliance with Argos
+                    </a>
+                </div>
+            </div>
         </div>
     </body>
 </html>

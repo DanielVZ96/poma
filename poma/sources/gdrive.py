@@ -1,8 +1,6 @@
 import logging
 from googleapiclient.http import MediaIoBaseDownload
 import io
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 from app.models import Workspace
@@ -56,7 +54,7 @@ def list_files(
     return files
 
 
-def download_file(service, file):
+def download_file(service, **file):
     mimetype = MIMETYPES_TO_EXPORT.get(file["mimeType"], "text/plain")
     request = service.files().export_media(fileId=file["id"], mimeType=mimetype)
     fh = io.BytesIO()
@@ -70,11 +68,7 @@ def download_file(service, file):
     return fh
 
 
-def iter_files(workspace: Workspace):
-    raw_creds = workspace.google_credentials
-    creds = Credentials.from_authorized_user_info(raw_creds, raw_creds["scopes"])
-    # create drive api client
-    service = build("drive", "v3", credentials=creds)
+def iter_files(service, workspace: Workspace):
     logger.info("Listing google drive files for %s (%s)", workspace.name, workspace.id)
     files = list_files(service)
     for file in files:
@@ -84,4 +78,4 @@ def iter_files(workspace: Workspace):
             workspace.id,
             file["id"],
         )
-        yield download_file(service, file), file
+        yield file

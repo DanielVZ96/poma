@@ -9,6 +9,8 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from fernet_fields import EncryptedTextField, EncryptedIntegerField
 
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 from django_resized import ResizedImageField
 
 from poma.search.semantic import create_corpus, search
@@ -89,6 +91,11 @@ class Workspace(models.Model):
         if self.corpus_id:
             return search(query, self.corpus_id)
         return None, "workplace has not been indexed yet", False
+
+    def get_google_drive_service(self):
+        raw_creds = self.google_credentials
+        creds = Credentials.from_authorized_user_info(raw_creds, raw_creds["scopes"])
+        return build("drive", "v3", credentials=creds)
 
 
 class Profile(models.Model):

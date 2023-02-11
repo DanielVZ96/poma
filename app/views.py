@@ -189,7 +189,7 @@ class Search(SearchMixin, LoginRequiredMixin, views.View):
                     "title": title,
                 }
                 if section := metadata.get("section"):
-                        section_ids.append(int(metadata.get("value")))
+                        section_ids.append(int(section))
         if gpt == "true" and document_ids:
             context = (
                 "".join(

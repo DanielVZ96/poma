@@ -1,0 +1,109 @@
+version: '3'
+
+services:
+
+  django:
+    restart: always
+    build: .
+    image: django
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/app
+    env_file: .env
+    environment:
+      DJANGO_CONFIGURATION: PROD
+      CELERY_BROKER_URL: redis://redis
+      CELERY_RESULT_BACKEND: redis://redis
+    command: daphne -b 0.0.0.0 -p 8000 poma.asgi:application
+    depends_on:
+      - redis
+      - worker
+    networks:
+      - web
+
+  migration:
+    restart: "no"
+    image: django
+    env_file: .env
+    environment:
+      DJANGO_CONFIGURATION: PROD
+      CELERY_BROKER_URL: redis://redis
+      CELERY_RESULT_BACKEND: redis://redis
+    command: python manage.py migrate
+    networks:
+      - web
+
+  staticfiles:
+    restart: "no"
+    image: django
+    env_file: .env
+    environment:
+      DJANGO_CONFIGURATION: PROD
+      CELERY_BROKER_URL: redis://redis
+      CELERY_RESULT_BACKEND: redis://redis
+    command: bash -c 'python manage.py tailwind build --no-input && python manage.py collectstatic --noinput'
+    networks:
+      - web
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - django
+    networks:
+      - web
+  worker:
+    build: .
+    env_file: .env
+    image: celery
+    volumes:
+      - .:/usr/src/app
+    command: celery -A poma worker -l info -E
+    environment:
+      CELERY_BROKER_URL: redis://redis
+      CELERY_RESULT_BACKEND: redis://redis
+    depends_on:
+      - redis
+    networks:
+      - web
+  monitor:
+    image: flower
+    build: .
+    env_file: .env
+    ports:
+      - "5555:5555"
+    command: [ 'celery', '-A', 'poma', 'flower' ]
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      - redis
+      - worker
+    networks:
+      - web
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - web
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+
+networks:
+  web:

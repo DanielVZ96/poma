@@ -20,14 +20,17 @@ Todo:
   - Thesis
   - Run experiment
   - Iterate
-- Implement suggested queries
 - Implement more integrations:
-    - Gmail
-    - Slack
-    - Notion
-    - Local Drive
+  - GDrive activity
+  - Gmail
+  - Slack
+  - Notion
+  - Local Drive
 - Implement PKM features:
   - Knowledge graph
+
+Done:
+- Implement suggested queries
 
 Ideas:
 

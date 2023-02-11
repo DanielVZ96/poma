@@ -88,7 +88,7 @@
             <div class="text-gray-500 p-2">Showing {{ results | length }} results from Google Drive™</div>
             <ol class="p-4 max-w-2xl">
                 {% if gpt_response %}
-                    <div class="my-2 text-justify p-2 border text-xl shadow-sm shadow-blue-500">
+                    <div class="my-2 text-justify p-4 text-xl shadow shadow-blue-500 border border-opacity-0 rounded-lg">
                         {{ gpt_response }}
                         <div class="text-sm text-gray-500">- By GPT</div>
                     </div>
@@ -104,7 +104,7 @@
                     </li>
                 {% empty %}
                     <li class="py-2 text-lg">
-                        Your search returned no results. Please make sure your spelling is correct and you contain documents related to your search.
+                        Your search returned no results. Please make sure your spelling is correct and you have documents related to your search.
                     </li>
                 {% endfor %}
             </ol>

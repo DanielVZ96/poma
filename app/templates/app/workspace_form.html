@@ -8,6 +8,35 @@
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <title>Poma Search</title>
+    <script type="module">
+    import Nango from 'https://unpkg.com/@nangohq/frontend/dist/index.js';
+    var nango = new Nango('https://nango-server-tvww.onrender.com'); // Nango Cloud
+
+    window.activate = (source, id) => {
+        document.getElementById("toast-warning").classList.remove("hidden");
+        nango
+        .auth(source, source + "-" + id)
+        .then((result) => {
+            console.log(`OAuth flow succeeded for provider "${result.providerConfigKey}" and connection-id "${result.connectionId}"!`);
+            window.location.reload();
+        })
+        .catch((error) => {
+            console.error(`There was an error in the OAuth flow for integration: ${error.error.message}`);
+        });
+    }
+    window.revoke = (source, id) => {
+        document.getElementById("toast-warning").classList.remove("hidden");
+        nango
+        .auth(source, source + "-" + id)
+        .then((result) => {
+            console.log(`OAuth flow succeeded for provider "${result.providerConfigKey}" and connection-id "${result.connectionId}"!`);
+            window.location.reload();
+        })
+        .catch((error) => {
+            console.error(`There was an error in the OAuth flow for integration: ${error.error.message}`);
+        });
+    }
+    </script>
 {% endblock extrahead %}
 <html lang="en" class="h-full">
     <body class="h-full bg-gradient-to-tr from-bgfrom to-bgto p-10 justify-center">
@@ -85,11 +114,11 @@
                 </div>
             </form>
         </div>
-        <div class="my-2 max-w-[40em]  flex flex-col justify-start m-auto bg-white shadow-2xl rounded-2xl h-auto overflow-hidden">
+        <div class="my-2 max-w-[40em]  flex flex-col justify-start m-auto bg-white shadow-2xl rounded-2xl h-auto overflow-hidden p-2">
             <h1 class="text-2xl justify-center text-center p-5">Integrations</h1>
             <div class="grid grid-cols-3 m-auto items-center">
-                <h2 class="text-xl justify-center text-center p-5">Google Drive™</h2>
                 <img class="w-10 h-10" src={% static 'images/icons/drive.png' %}/>
+                <h2 class="text-xl justify-start text-left p-5">Google Drive™</h2>
                 {% if has_google %}
                     <a href="{% url 'google-oauth-revoke' %}"
                        class="text-center align-middle border shadow-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-white font-semibold h-auto px-6 rounded-lg flex items-center justify-center  /20  w-auto m-auto text-lg bg-red-500">Revoke</a>
@@ -97,6 +126,37 @@
                     <a href="{% url 'google-oauth' %}"
                        class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto px-6 rounded-lg flex items-center justify-center  /20  w-auto m-auto text-lg">Activate</a>
                 {% endif %}
+                <img class="w-10 h-10" src={% static 'images/icons/slack.svg' %}/>
+                <h2 class="text-xl justify-start text-left p-5">Slack™</h2>
+                {% if has_slack %}
+                    <button onclick="window.activate('slack', '{{ workspace_id }}')"
+                            class="text-center align-middle border shadow-xl outline-none  text-black font-semibold h-auto px-6 rounded-lg flex items-center justify-center  /20  w-auto m-auto text-lg bg-green-100">
+                        Re-Activate
+                    </button>
+                {% else %}
+                    <button onclick="window.activate('slack', '{{ workspace_id }}')"
+                            class="text-center align-middle border shadow-xl bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 text-black font-semibold h-auto px-6 rounded-lg flex items-center justify-center  /20  w-auto m-auto text-lg">
+                        Activate
+                    </button>
+                {% endif %}
+            </div>
+            <div id="toast-warning"
+                 class="hidden absolute mx-20 my-20 flex self-center items-center w-full max-w-lg p-4 h-28 text-gray-500 bg-white rounded-lg shadow-2xl border"
+                 role="alert">
+                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg dark:bg-orange-700 dark:text-orange-200">
+                    <svg aria-hidden="true"
+                         class="w-6 h-6"
+                         fill="currentColor"
+                         viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd">
+                        </path>
+                    </svg>
+                    <span class="sr-only">Warning icon</span>
+                </div>
+                <div class="ml-3 text-xl font-normal justify-center">
+                    Please refresh the webpage once you finish setting up the integration.
+                </div>
             </div>
         </div>
     </body>

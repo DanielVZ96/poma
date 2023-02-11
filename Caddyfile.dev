@@ -1,0 +1,4 @@
+localhost:8000 {
+    tls internal
+    reverse_proxy django:8000
+}

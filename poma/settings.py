@@ -46,7 +46,8 @@ def verified_callback(user):
 
 
 class DEV(Configuration):
-
+    USE_X_FORWARDED_HOST = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -57,6 +58,7 @@ class DEV(Configuration):
     DEBUG = True
 
     ALLOWED_HOSTS = ["*"]
+    CSRF_TRUSTED_ORIGINS = ["https://localhost:8000"]
 
     TAILWIND_APP_NAME = "theme"
     INTERNAL_IPS = [

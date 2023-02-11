@@ -1,13 +1,10 @@
 version: '3'
 
 services:
-
   django:
     restart: always
     build: .
     image: django
-    ports:
-      - "8000:8000"
     volumes:
       - .:/usr/src/app
     env_file: .env_local
@@ -16,7 +13,25 @@ services:
       DJANGO_CONFIGURATION: DEV
       CELERY_BROKER_URL: redis://redis
       CELERY_RESULT_BACKEND: redis://redis
-      DEMO_USERNAME: Demo
+      #DEMO_USERNAME: Demo
+    depends_on:
+      - redis
+      - worker
+    stdin_open: true
+    tty: true
+  slack-bot:
+    restart: always
+    build: .
+    image: django
+    volumes:
+      - .:/usr/src/app
+    env_file: .env_local
+    command: ./manage.py slack_bot
+    environment:
+      DJANGO_CONFIGURATION: DEV
+      CELERY_BROKER_URL: redis://redis
+      CELERY_RESULT_BACKEND: redis://redis
+      #DEMO_USERNAME: Demo
     depends_on:
       - redis
       - worker
@@ -49,3 +64,19 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - $PWD/Caddyfile.dev:/etc/caddy/Caddyfile
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - django
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,10 @@
+app.pomasearch.com {
+    basicauth * {
+		Beta $2a$14$mI0kxATpg5STl7BgE2ET/uwKRvqTs47Y6qfCzkeUaQr4Vz1oB7Ly.
+	}
+    route {
+        uri replace /media /poma
+        redir /poma* https://poma.s3.fr-par.scw.cloud/{uri}
+        reverse_proxy django:8000
+    }
+}

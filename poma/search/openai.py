@@ -31,7 +31,9 @@ A: Las olimpiadas de 1992 se realizaron en Barcelona, España.
 Q: How many squigs are in a bonk?
 A: Unknown
 
-Context: {context}
+Context: \"\"\"
+{context}
+\"\"\"
 
 Based only in the above context, and without adding any other information that's not in the context above, answer the following question in at least two and at most 6 sentences of a single paragraph:
 
@@ -39,14 +41,13 @@ Q: {query}
 A:
     """
     response = openai.Completion.create(
-        model="code-davinci-002",
+        model="text-davinci-003",
         prompt=prompt,
         temperature=0.5,
         max_tokens=500,
         frequency_penalty=1,
         presence_penalty=1,
         echo=False,
-        stop=["\n"],
     )
     text = response.get("choices", [None])[0]
     if text is None:

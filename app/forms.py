@@ -51,3 +51,12 @@ class WorkspaceCreationMultiForm(MultiModelForm):
         "user": RegisterForm,
         "workspace": WorkspaceForm,
     }
+    labels = {
+        "logo" "Workspace logo",
+        "name" "Workspace name",
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.forms["workspace"].fields["logo"].label = "Workspace Logo"
+        self.forms["workspace"].fields["name"].label = "Workspace Name"

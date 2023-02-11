@@ -58,7 +58,7 @@ def index(
     Returns:
         (None, True) in case of success and returns (error, False) in case of failure.
     """
-
+    customer_id = int(customer_id)
     logging.info("Indexing data into the corpus.")
     index_req = services_pb2.IndexDocumentRequest()
     index_req.customer_id = customer_id
@@ -136,15 +136,23 @@ def search(query_string, corpus_id=2):
     return response, error, success
 
 
-def store(id: str, title: str, is_title: bool, sections: List[str]):
+def store(id: str, title: str, is_title: bool, sections: List[str], corpus_id: int):
     document = indexing_pb2.Document()
     document.metadata_json = json.dumps({"is_title": is_title})
-    document.document_id = f"mvp-{id}"
+    document.document_id = id
     document.title = title
     for section_text in sections:
         section = indexing_pb2.Section()
         section.text = section_text
         document.section.extend([section])
+    error, success = index(
+        document, CUSTOMER_ID, corpus_id, INDEXING_ENDPOINT, _get_jwt_token()[0]
+    )
+    if not success:
+        logging.error(
+            "GRPC INDEX failed. RESON: %s RESPONSE: %s", error,
+        )
+        return None
     return document
 
 

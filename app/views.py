@@ -1,3 +1,4 @@
+import os
 import secrets
 import urllib.parse
 import logging
@@ -10,18 +11,24 @@ from django.views.generic.edit import FormView
 from django.views.generic.edit import UpdateView
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from app.forms import WorkspaceForm, WorkspaceCreationMultiForm
-from app.models import Workspace, Profile, Document, Section
+from app.models import SlackInstallation, Workspace, Profile, Document, Section
 from app.verification import send_verification, verify_user_token
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import requests
 from poma.search.openai import anwser
 from app import tasks
+from poma.sources import slack
+from poma.sources.nango import get_token
 
 PAGING = 15
+SLACK_SCOPES = os.getenv("SLACK_SCOPES", "")
+SLACK_CLIENT_ID = os.getenv("SLACK_CLIENT_ID")
+SLACK_CLIENT_SECRECT = os.getenv("SLACK_CLIENT_SECRET")
 
 
 class DemoMixin(AccessMixin):
@@ -95,6 +102,22 @@ class UpdateWorkspaceView(LoginRequiredMixin, UpdateView):
         context["has_google"] = (
             workspace.google_token is not None and workspace.google_active is not None
         )
+        token, has_slack = get_token("slack", workspace.id)
+        context["has_slack"] = has_slack
+        if has_slack:
+            SlackInstallation.objects.get_or_create(
+                client_id=os.getenv("SLACK_CLIENT_ID"),
+                enterprise_id=token["credentials"]["raw"]["enterprise"],
+                team_id=token["credentials"]["raw"]["team"]["id"],
+                user_id=token["credentials"]["raw"]["authed_user"]["id"],
+                user_token=token["credentials"]["access_token"],
+                defaults={"installed_at": timezone.now()},
+            )
+            if workspace.slack_workspace_id == None:
+                workspace.slack_workspace_id = token["credentials"]["raw"]["team"]["id"]
+                workspace.save()
+                tasks.index_slack.delay(workspace.id)
+        context["workspace_id"] = workspace.id
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -128,7 +151,7 @@ class Search(SearchMixin, LoginRequiredMixin, views.View):
     def get(self, request, *args, **kwargs):
         query = request.GET.get("q")
         gpt = request.GET.get("gpt")
-        response, error, success = request.user.profile.current_workspace.search(query)
+        response, error, success = request.user.profile.current_workspace._search(query)
         if not success:
             logging.error("Search failed, %s", error)
             params = {"reason": error}
@@ -148,13 +171,16 @@ class Search(SearchMixin, LoginRequiredMixin, views.View):
                 try:
                     document_id = documents[response.get("documentIndex")].get("id")
                     document = Document.objects.filter(identifier=document_id).first()
-                    document_ids.append(document.id)
-                    if document:
+                    if documents and document:
                         link = document.link
                         title = document.title
+                        document_ids.append(document.id)
                 except IndexError as e:
                     logging.error("Getting the document failed", exc_info=e)
                     pass
+                metadata = {m["name"]: m["value"] for m in response.get("metadata", [])}
+                if metadata.get("is_title") == 'true':
+                    continue
                 text = response.get("text", "")
                 results[text + "-" + link] = {
                     "text": text,
@@ -162,10 +188,9 @@ class Search(SearchMixin, LoginRequiredMixin, views.View):
                     "link": link,
                     "title": title,
                 }
-                for metadata in response.get("metadata", []):
-                    if metadata.get("name") == "section":
+                if section := metadata.get("section"):
                         section_ids.append(int(metadata.get("value")))
-        if gpt == "true":
+        if gpt == "true" and document_ids:
             context = (
                 "".join(
                     Section.objects.filter(
@@ -238,7 +263,7 @@ class GoogleOauthCallback(views.View):
         workspace.add_google_credentials(credentials)
         workspace.activate_google()
         workspace.save()
-        tasks.index_workspace.delay(workspace.id)
+        tasks.index_google.delay(workspace.id)
         return redirect("workspace-update")
 
 

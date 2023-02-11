@@ -23,7 +23,21 @@ services:
       - worker
     networks:
       - web
-
+  slack-bot:
+    restart: always
+    build: .
+    image: django
+    volumes:
+      - .:/usr/src/app
+    env_file: .env
+    command: ./manage.py slack_bot
+    environment:
+      DJANGO_CONFIGURATION: PROD
+      CELERY_BROKER_URL: redis://redis
+      CELERY_RESULT_BACKEND: redis://redis
+      #DEMO_USERNAME: Demo
+    depends_on:
+      - redis
   migration:
     restart: "no"
     image: django
@@ -56,7 +70,7 @@ services:
       - "443:443"
       - "443:443/udp"
     volumes:
-      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/Caddyfile.prod:/etc/caddy/Caddyfile
       - $PWD/site:/srv
       - caddy_data:/data
       - caddy_config:/config
